@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 }
 
 // Récupérer les tâches
-$sql = "SELECT id, title, description, created_at, updated_at FROM tasks ORDER BY created_at DESC";
+$sql = "SELECT id, title, description, completed, created_at, updated_at FROM tasks ORDER BY created_at DESC";
 $result = $conn->query($sql);
 
 $tasks = [];
