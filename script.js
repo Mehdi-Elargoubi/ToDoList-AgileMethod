@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Modals et Toasts
   const confirmDeleteModal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
-  const successToastElement = document.getElementById("successToast");
+  const addSuccessToastElement = document.getElementById("addSuccessToast"); // Nouveau nom pour le toast d'ajout
   const editSuccessToastElement = document.getElementById("editSuccessToast");
+  const deleteSuccessToastElement = document.getElementById("deleteSuccessToast");
 
-  const successToast = new bootstrap.Toast(successToastElement);
+  const addSuccessToast = new bootstrap.Toast(addSuccessToastElement); // Nouveau nom pour le toast d'ajout
   const editSuccessToast = new bootstrap.Toast(editSuccessToastElement);
+  const deleteSuccessToast = new bootstrap.Toast(deleteSuccessToastElement);
 
   // Fonction pour charger les tâches
   function loadTasks() {
@@ -111,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            successToast.show();
+            deleteSuccessToast.show();  // Affichage du toast de suppression
             loadTasks();
           } else {
             alert("Erreur lors de la suppression de la tâche");
@@ -137,47 +139,55 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Fonction pour soumettre le formulaire de création/édition de tâche
-  taskForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+// Fonction pour soumettre le formulaire de création/édition de tâche
+taskForm.addEventListener("submit", (event) => {
+  event.preventDefault();
 
-    const taskId = taskIdInput.value;
-    const title = titleInput.value;
-    const description = descriptionInput.value;
+  const taskId = taskIdInput.value;
+  const title = titleInput.value;
+  const description = descriptionInput.value;
 
-    const url = taskId ? "update_task.php" : "create_task.php";
-    const method = taskId ? "POST" : "POST";
+  const url = taskId ? "update_task.php" : "create_task.php";  // Choisir l'URL selon l'ID de tâche
+  const method = "POST"; // La méthode reste toujours POST
 
-    const data = new URLSearchParams();
-    data.append("id", taskId);
-    data.append("title", title);
-    data.append("description", description);
+  const data = new URLSearchParams();
+  data.append("id", taskId);
+  data.append("title", title);
+  data.append("description", description);
 
-    fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: data,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          if (taskId) {
-            editSuccessToast.show();
-          } else {
-            successToast.show();
-          }
-          loadTasks();
+  fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: data,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        if (taskId) {
+          // Si taskId est défini, c'est une mise à jour
+          editSuccessToast.show();
         } else {
-          alert("Erreur lors de l'ajout/édition de la tâche");
+          // Sinon, c'est une création de tâche
+          addSuccessToast.show();  // Affichage du toast de succès pour l'ajout
         }
-      })
-      .catch((error) => console.error("Erreur lors de l'ajout/édition de la tâche :", error));
+        loadTasks();  // Charger la liste des tâches après l'ajout ou la modification
+      } else {
+        alert("Erreur lors de l'ajout/édition de la tâche");
+      }
+    })
+    .catch((error) => console.error("Erreur lors de l'ajout/édition de la tâche :", error));
 
-    taskForm.reset();
-    taskSubmitButton.textContent = "Ajouter";
-  });
+  // Réinitialisation du formulaire pour éviter la persistance de l'ancien état
+  taskForm.reset();
+
+  // Remet le texte du bouton à "Ajouter" pour la prochaine soumission
+  taskSubmitButton.textContent = "Ajouter";
+
+  // Réinitialiser l'ID de la tâche pour s'assurer qu'on est bien en mode "ajout" après modification
+  taskIdInput.value = "";  // Réinitialise l'input taskId
+});
 
   loadTasks();
 });

@@ -53,12 +53,12 @@
     </div>
   </div>
 
-  <!-- Toast pour les messages de succès -->
+  <!-- Toast pour les messages de succès (ajout) -->
   <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
-    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="addSuccessToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body">
-          Tâche supprimée avec succès
+          Tâche ajoutée avec succès
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
@@ -71,6 +71,18 @@
       <div class="d-flex">
         <div class="toast-body">
           Tâche modifiée avec succès
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast pour les messages de succès (suppression) -->
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+    <div id="deleteSuccessToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          Tâche supprimée avec succès
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
