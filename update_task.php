@@ -14,13 +14,12 @@ if ($conn->connect_error) {
 
 // Récupérer les données envoyées via POST
 $id = $_POST['id'] ?? null;
-$title = $_POST['title'] ?? '';
 $description = $_POST['description'] ?? '';
 
 // Vérifier que les champs obligatoires sont remplis
-if (!empty($id) && !empty($title)) {
-    $stmt = $conn->prepare("UPDATE tasks SET title = ?, description = ?, updated_at = NOW() WHERE id = ?");
-    $stmt->bind_param("ssi", $title, $description, $id);
+if (!empty($id)) {
+    $stmt = $conn->prepare("UPDATE tasks SET description = ?, updated_at = NOW() WHERE id = ?");
+    $stmt->bind_param("si", $description, $id);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Tâche modifiée avec succès"]);

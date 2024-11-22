@@ -39,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${task.completed == 1 ? 'checked' : ''}>
               <strong>${task.title}</strong>
               <p class="mb-0 small">${task.description}</p>
-              <span class="text-secondary small">Créé le: ${task.created_at}</span>
+              <span class="text-secondary small">Creation: ${task.created_at}</span>
+              <span class="text-secondary small">Modification: ${task.updated_at}</span>
             </div>
             <div>
               <button class="btn btn-sm btn-warning edit-task" data-id="${task.id}" data-title="${task.title}" data-description="${task.description}">Modifier</button>
@@ -134,6 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
         taskIdInput.value = taskId;
         titleInput.value = title;
         descriptionInput.value = description;
+
+        titleInput.readOnly = true;
+
         taskSubmitButton.textContent = "Mettre à jour";
       });
     });
