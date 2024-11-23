@@ -12,12 +12,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Récupérer les tâches en triant par updated_at, en remplaçant les valeurs nulles par created_at
+// Récupérer les tâches en triant par l'état de la tâche (complétée ou non), et par updated_at ou created_at
 $sql = "SELECT id, title, description, completed, 
         IFNULL(updated_at, created_at) AS updated_at, 
         created_at 
         FROM tasks 
-        ORDER BY updated_at DESC";
+        ORDER BY completed ASC, updated_at DESC";
 
 $result = $conn->query($sql);
 

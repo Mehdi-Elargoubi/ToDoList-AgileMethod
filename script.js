@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Modals et Toasts
   const confirmDeleteModal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
-  const addSuccessToastElement = document.getElementById("addSuccessToast"); // Nouveau nom pour le toast d'ajout
+  const addSuccessToastElement = document.getElementById("addSuccessToast");
   const editSuccessToastElement = document.getElementById("editSuccessToast");
   const deleteSuccessToastElement = document.getElementById("deleteSuccessToast");
 
-  const addSuccessToast = new bootstrap.Toast(addSuccessToastElement); // Nouveau nom pour le toast d'ajout
+  const addSuccessToast = new bootstrap.Toast(addSuccessToastElement);
   const editSuccessToast = new bootstrap.Toast(editSuccessToastElement);
   const deleteSuccessToast = new bootstrap.Toast(deleteSuccessToastElement);
 
@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${task.completed == 1 ? 'checked' : ''}>
               <strong>${task.title}</strong>
               <p class="mb-0 small">${task.description}</p>
-              <span class="text-secondary small">Creation: ${task.created_at}</span>
-              <span class="text-secondary small">Modification: ${task.updated_at}</span>
+              <span class="text-secondary small">Modification : ${task.updated_at}</span>
+              <span class="text-secondary small">Creation : ${task.created_at}</span>
             </div>
             <div>
               <button class="btn btn-sm btn-warning edit-task" data-id="${task.id}" data-title="${task.title}" data-description="${task.description}">Modifier</button>
@@ -86,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 listItem.style.textDecoration = "";
                 listItem.style.color = "";
               }
+
+              // Déplacer la tâche complétée au bas de la liste
+              taskList.appendChild(listItem);
             } else {
               alert("Erreur lors de la mise à jour du statut de la tâche");
             }
@@ -135,63 +138,53 @@ document.addEventListener("DOMContentLoaded", () => {
         taskIdInput.value = taskId;
         titleInput.value = title;
         descriptionInput.value = description;
-
-        titleInput.readOnly = true;
-
         taskSubmitButton.textContent = "Mettre à jour";
       });
     });
   }
 
-// Fonction pour soumettre le formulaire de création/édition de tâche
-taskForm.addEventListener("submit", (event) => {
-  event.preventDefault();
+  // Fonction pour soumettre le formulaire de création/édition de tâche
+  taskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  const taskId = taskIdInput.value;
-  const title = titleInput.value;
-  const description = descriptionInput.value;
+    const taskId = taskIdInput.value;
+    const title = titleInput.value;
+    const description = descriptionInput.value;
 
-  const url = taskId ? "update_task.php" : "create_task.php";  // Choisir l'URL selon l'ID de tâche
-  const method = "POST"; // La méthode reste toujours POST
+    const url = taskId ? "update_task.php" : "create_task.php";
+    const method = "POST";
 
-  const data = new URLSearchParams();
-  data.append("id", taskId);
-  data.append("title", title);
-  data.append("description", description);
+    const data = new URLSearchParams();
+    data.append("id", taskId);
+    data.append("title", title);
+    data.append("description", description);
 
-  fetch(url, {
-    method: method,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: data,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        if (taskId) {
-          // Si taskId est défini, c'est une mise à jour
-          editSuccessToast.show();
-        } else {
-          // Sinon, c'est une création de tâche
-          addSuccessToast.show();  // Affichage du toast de succès pour l'ajout
-        }
-        loadTasks();  // Charger la liste des tâches après l'ajout ou la modification
-      } else {
-        alert("Erreur lors de l'ajout/édition de la tâche");
-      }
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: data,
     })
-    .catch((error) => console.error("Erreur lors de l'ajout/édition de la tâche :", error));
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          if (taskId) {
+            editSuccessToast.show();
+          } else {
+            addSuccessToast.show();
+          }
+          loadTasks();
+        } else {
+          alert("Erreur lors de l'ajout/édition de la tâche");
+        }
+      })
+      .catch((error) => console.error("Erreur lors de l'ajout/édition de la tâche :", error));
 
-  // Réinitialisation du formulaire pour éviter la persistance de l'ancien état
-  taskForm.reset();
-
-  // Remet le texte du bouton à "Ajouter" pour la prochaine soumission
-  taskSubmitButton.textContent = "Ajouter";
-
-  // Réinitialiser l'ID de la tâche pour s'assurer qu'on est bien en mode "ajout" après modification
-  taskIdInput.value = "";  // Réinitialise l'input taskId
-});
+    taskForm.reset();
+    taskSubmitButton.textContent = "Ajouter";
+    taskIdInput.value = "";
+  });
 
   loadTasks();
 });
